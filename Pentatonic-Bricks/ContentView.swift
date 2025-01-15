@@ -40,112 +40,141 @@ struct ContentView: View {
     @State private var reverbPresetEditing = false
     
 //    User interface options state variables
+    @State private var areNotesHolding = false
 
     
     var body: some View {
-        VStack {
-            HStack {
-                NavigationLink(destination: InfoView()) {
-                    Text("Info")
-                }
-                .buttonStyle(.borderedProminent)
-                .foregroundStyle(.white)
-                .background(.blue)
-                .cornerRadius(8)
-                .padding()
-//                .border(Color.red, width: 5)
-            }
-            Picker("Root Note", selection: $rootNote) {
-                Text("C").tag("C")
-                Text("C#").tag("C#")
-                Text("D").tag("D")
-                Text("D#").tag("D#")
-                Text("E").tag("E")
-                Text("F").tag("F")
-                Text("F#").tag("F#")
-                Text("G").tag("G")
-                Text("G#").tag("G#")
-                Text("A").tag("A")
-                Text("A#").tag("A#")
-                Text("B").tag("B")
-            }
-            .frame(width: 700, height: 100, alignment:.center)
-            .pickerStyle(WheelPickerStyle())
-            .padding()
-                HStack {
-                    ForEach(pentatonicScales[rootNote]!, id: \.self) { note in
-                        Text(note)
-                            .font(.title)
-                            .frame(width: 60, height: 200)
-                            .padding(1)
-                            .background(activeNotes.contains(note) ? Color.green : Color.blue) // Change color depending if it is being pressed
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                            .gesture(
-                                DragGesture(minimumDistance: 0)
-                                    .onChanged { _ in
-                                        if !activeNotes.contains(note) { // Only trigger if the note isn't already active
-                                            activeNotes.insert(note) // Add note to active notes
-                                            conductor.playNote(MIDIname: note) // Play the note
-                                        }
-                                    }
-                                    .onEnded { _ in
-                                        activeNotes.remove(note) // Remove note from active notes
-                                        conductor.stopNote(MIDIname: note) // Stop the note
-                                    }
-                            )
+//        Navigation view logic based on LP 6.2
+        NavigationView{
+            ZStack{
+                Color.cyan
+                    .ignoresSafeArea()
+                VStack {
+                    HStack {
+                        NavigationLink(destination: InfoView()) {
+                            Text("Instructions")
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .foregroundStyle(.white)
+                        .background(.blue)
+                        .cornerRadius(8)
+                        //                .border(Color.red, width: 5)
+                        
+                        Button(areNotesHolding ? "Turn note toggle off" : "Turn note toggle on") {
+                            areNotesHolding.toggle()
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .padding()
                     }
-                    .padding(2)
+                    Picker("Root Note", selection: $rootNote) {
+                        Text("C").tag("C")
+                        Text("C#").tag("C#")
+                        Text("D").tag("D")
+                        Text("D#").tag("D#")
+                        Text("E").tag("E")
+                        Text("F").tag("F")
+                        Text("F#").tag("F#")
+                        Text("G").tag("G")
+                        Text("G#").tag("G#")
+                        Text("A").tag("A")
+                        Text("A#").tag("A#")
+                        Text("B").tag("B")
+                    }
+                    .frame(width: 700, height: 50, alignment:.center)
+                    .pickerStyle(WheelPickerStyle())
+                    .padding()
+                    HStack {
+                        ForEach(pentatonicScales[rootNote]!, id: \.self) { note in
+                            Text(note)
+                                .font(.title)
+                                .frame(width: 60, height: 200)
+                                .padding(1)
+                                .background(activeNotes.contains(note) ? Color.green : Color.blue) // Change color depending if it is being pressed
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
+                                .gesture(
+                                    DragGesture(minimumDistance: 0)
+                                        .onChanged { _ in
+                                            if areNotesHolding { // Toggle behavior
+                                                if activeNotes.contains(note) {
+                                                    // If the note is already active, remove it and stop playing
+                                                    activeNotes.remove(note)
+                                                    conductor.stopNote(MIDIname: note)
+                                                } else {
+                                                    // If the note is not active, add it and play the note
+                                                    activeNotes.insert(note)
+                                                    conductor.playNote(MIDIname: note)
+                                                }
+                                            } else { // Non-toggled behavior
+                                                if !activeNotes.contains(note) {
+                                                    // Play note if it isn't already active
+                                                    activeNotes.insert(note)
+                                                    conductor.playNote(MIDIname: note)
+                                                }
+                                            }
+                                        }
+                                        .onEnded { _ in
+                                            if !areNotesHolding { // Only stop notes in non-toggled mode
+                                                activeNotes.remove(note)
+                                                conductor.stopNote(MIDIname: note)
+                                            }
+                                        }
+                                )
+                        }
+                        .padding(2)
+                    }
+                    Slider(value: $vibratoSliderValue, in: 0...1)
+                    {Text("VibratoSlider")}
+                    minimumValueLabel: {Text("0")}
+                    maximumValueLabel: {Text("1")}
+                    onEditingChanged: {
+                        editing in vibratoSliderEditing = editing
+                    }
+                    .onChange(of: vibratoSliderValue, initial: true) { (vibrato, newValue) in conductor.changeVibratoDepth(vibrato: newValue)
+                    }
+                    .padding()
+                    Slider(value: $reverbSliderValue, in: 0...1)
+                    {Text("ReverbSlider")}
+                    minimumValueLabel: {Text("0")}
+                    maximumValueLabel: {Text("1")}
+                    onEditingChanged: {
+                        editing in reverbSliderEditing = editing
+                    }
+                    .onChange(of: reverbSliderValue, initial: true) { (reverbAmount, newValue) in conductor.changeReverbAmount(reverbAmount: newValue)
+                    }
+                    .padding()
+                    Picker("Reverb Setting", selection: $reverbPreset) {
+                        Text("Small Room").tag(0)
+                        Text("Medium Room").tag(1)
+                        Text("Large Room").tag(2)
+                        Text("Medium Hall").tag(3)
+                        Text("Large Hall").tag(4)
+                        Text("Plate").tag(5)
+                        Text("Medium Chamber").tag(6)
+                        Text("Large Chamber").tag(7)
+                        Text("Cathedral").tag(8)
+                        Text("Large Room 2").tag(9)
+                        Text("Medium Hall 2").tag(10)
+                        Text("Medium Hall 3").tag(11)
+                        Text("Large Hall 2").tag(12)
+                    }
+                    .frame(width: 700, height: 50, alignment:.center)
+                    .pickerStyle(WheelPickerStyle())
+                    .onChange(of: reverbPreset, initial: true) { (reverbPreset, newValue) in
+                        conductor.changeReverbPreset(reverbPreset: newValue)
+                    }
+                    .padding()
                 }
-            Slider(value: $vibratoSliderValue, in: 0...1)
-                {Text("VibratoSlider")}
-                minimumValueLabel: {Text("0")}
-                maximumValueLabel: {Text("1")}
-                onEditingChanged: {
-                    editing in vibratoSliderEditing = editing
+                .onAppear {
+                    conductor.start()
                 }
-                .onChange(of: vibratoSliderValue, initial: true) { (vibrato, newValue) in conductor.changeVibratoDepth(vibrato: newValue)
+                .onDisappear{
+                    conductor.stop()
                 }
                 .padding()
-            Slider(value: $reverbSliderValue, in: 0...1)
-                {Text("ReverbSlider")}
-                minimumValueLabel: {Text("0")}
-                maximumValueLabel: {Text("1")}
-                onEditingChanged: {
-                    editing in reverbSliderEditing = editing
-                }
-                .onChange(of: reverbSliderValue, initial: true) { (reverbAmount, newValue) in conductor.changeReverbAmount(reverbAmount: newValue)
-                }
-                .padding()
-            Picker("Reverb Setting", selection: $reverbPreset) {
-                Text("Small Room").tag(0)
-                Text("Medium Room").tag(1)
-                Text("Large Room").tag(2)
-                Text("Medium Hall").tag(3)
-                Text("Large Hall").tag(4)
-                Text("Plate").tag(5)
-                Text("Medium Chamber").tag(6)
-                Text("Large Chamber").tag(7)
-                Text("Cathedral").tag(8)
-                Text("Large Room 2").tag(9)
-                Text("Medium Hall 2").tag(10)
-                Text("Medium Hall 3").tag(11)
-                Text("Large Hall 2").tag(12)
             }
-            .frame(width: 700, height: 100, alignment:.center)
-            .pickerStyle(WheelPickerStyle())
-            .onChange(of: reverbPreset, initial: true) { (reverbPreset, newValue) in
-                conductor.changeReverbPreset(reverbPreset: newValue)
-            }
-            .padding()
         }
-        .onAppear {
-            conductor.start()
-        }
-        .onDisappear{
-            conductor.stop()
-        }
-        .padding()
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 
