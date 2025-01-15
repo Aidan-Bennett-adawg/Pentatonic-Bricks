@@ -22,19 +22,14 @@ let pentatonicScales: [String: [String]] = [
     "B": ["B2", "C#3", "D#3", "F#3", "G#3", "B3", "C#4", "D#4", "F#4", "G#4", "B4"]
 ]
 
-let rootNotes = [
-    "C", "C#", "D", "D#", "E", "F",
-    "F#", "G", "G#", "A", "A#", "B"
-]
-
 struct ContentView: View {
     @StateObject private var conductor = SynthConductor()
     @State private var activeNotes: Set<String> = [] // Tracks currently pressed notes
-    @State private var rootNoteIndex: Int = 5
+    @State private var rootNote: String = "C"
     var body: some View {
         VStack {
                 HStack {
-                    ForEach(pentatonicScales[rootNotes[rootNoteIndex]]!, id: \.self) { note in
+                    ForEach(pentatonicScales[rootNote]!, id: \.self) { note in
                         Text(note)
                             .font(.title)
                             .frame(width: 60, height: 200)
@@ -58,6 +53,22 @@ struct ContentView: View {
                     }
                     .padding(2)
                 }
+            Picker("Root Note", selection: $rootNote) {
+                Text("C").tag("C")
+                Text("C#").tag("C#")
+                Text("D").tag("D")
+                Text("D#").tag("D#")
+                Text("E").tag("E")
+                Text("F").tag("F")
+                Text("F#").tag("F#")
+                Text("G").tag("G")
+                Text("G#").tag("G#")
+                Text("A").tag("A")
+                Text("A#").tag("A#")
+                Text("B").tag("B")
+            }
+            .frame(width: 400, height: 100, alignment:.center)
+            .pickerStyle(WheelPickerStyle())
         }
         .onAppear {
             conductor.start()

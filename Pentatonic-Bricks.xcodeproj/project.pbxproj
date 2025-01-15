@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		BB284B112D37CDF60040FF34 /* SoundpipeAudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = BB284B102D37CDF60040FF34 /* SoundpipeAudioKit */; };
 		BB284B142D37CE270040FF34 /* DunneAudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = BB284B132D37CE270040FF34 /* DunneAudioKit */; };
+		BB284B372D382E4D0040FF34 /* Controls in Frameworks */ = {isa = PBXBuildFile; productRef = BB284B362D382E4D0040FF34 /* Controls */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BB284B112D37CDF60040FF34 /* SoundpipeAudioKit in Frameworks */,
+				BB284B372D382E4D0040FF34 /* Controls in Frameworks */,
 				BB284B142D37CE270040FF34 /* DunneAudioKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -74,6 +76,7 @@
 			packageProductDependencies = (
 				BB284B102D37CDF60040FF34 /* SoundpipeAudioKit */,
 				BB284B132D37CE270040FF34 /* DunneAudioKit */,
+				BB284B362D382E4D0040FF34 /* Controls */,
 			);
 			productName = "Pentatonic-Bricks";
 			productReference = BB284ADF2D37CCC70040FF34 /* Pentatonic-Bricks.app */;
@@ -106,6 +109,7 @@
 			packageReferences = (
 				BB284B0F2D37CDF60040FF34 /* XCRemoteSwiftPackageReference "SoundpipeAudioKit" */,
 				BB284B122D37CE270040FF34 /* XCRemoteSwiftPackageReference "DunneAudioKit" */,
+				BB284B352D382E4D0040FF34 /* XCRemoteSwiftPackageReference "Controls" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BB284AE02D37CCC70040FF34 /* Products */;
@@ -353,6 +357,14 @@
 				minimumVersion = 5.6.1;
 			};
 		};
+		BB284B352D382E4D0040FF34 /* XCRemoteSwiftPackageReference "Controls" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AudioKit/Controls";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.4;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -365,6 +377,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BB284B122D37CE270040FF34 /* XCRemoteSwiftPackageReference "DunneAudioKit" */;
 			productName = DunneAudioKit;
+		};
+		BB284B362D382E4D0040FF34 /* Controls */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BB284B352D382E4D0040FF34 /* XCRemoteSwiftPackageReference "Controls" */;
+			productName = Controls;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
