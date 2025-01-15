@@ -3,11 +3,12 @@
 //  Pentatonic-Bricks
 //
 //  Created by Aidan Bennett on 15/01/2025.
-//
+//  Template from lab 7 used for the Synth class functionality
 
 import AudioKit
 import DunneAudioKit
 import SwiftUI
+import AVFAudio
 
 
 let noteToMIDIDictionary: [String: MIDINoteNumber] = {
@@ -25,13 +26,16 @@ let noteToMIDIDictionary: [String: MIDINoteNumber] = {
 
 open class SynthConductor: ObservableObject, HasAudioEngine{
     
+    
     var mySynth: Synth! // Class variable to hold synth instrument
+    var reverb: Reverb! // Class variable for the reverb node
     public let engine = AudioEngine() // Creates an audio engine for playing the synth
+
     
     init() {
         mySynth = Synth()       // Create synth instrument
-        
-        engine.output = mySynth       // and connect it to audio out
+        reverb = Reverb(mySynth) // Creates the reverb node
+        engine.output = reverb       // and connect it to audio out
         // The synth will play without any parameters being set
         // but here are a few things you can adjust
         // Look at the documentation online for the full set
@@ -40,20 +44,17 @@ open class SynthConductor: ObservableObject, HasAudioEngine{
         mySynth.filterCutoff = 0.5
         mySynth.filterAttackDuration = 1.5
         mySynth.masterVolume = 0.5
-        mySynth.filterResonance = 0.8
+        mySynth.filterResonance = 1.0
         mySynth.vibratoDepth = 0.2
         
         try!engine.start()
     }
     
-    open func changeVibratoDepth(vibrato: Float) {
-        mySynth.vibratoDepth = AUValue(vibrato)
-    }
-
+/*---------------MIDI note playing functions--------------------------*/
 //    This function uses the MIDI note to number dictionary defined at the top of this class to play a MIDI note depending on the string passed to the dictionary
     open func playNote (MIDIname: String){
         if let midiNote = noteToMIDIDictionary[MIDIname] {
-            print("Note \(MIDIname) corresponds to MIDI note \(midiNote)")
+//            print("Note \(MIDIname) corresponds to MIDI note \(midiNote)")
             mySynth.play(noteNumber: midiNote, velocity: 30)
         }
         else{
@@ -69,4 +70,20 @@ open class SynthConductor: ObservableObject, HasAudioEngine{
             print("That MIDI value is invalid")
         }
     }
+
+/*---------------Effects parameter functions--------------------------*/
+    
+    open func changeVibratoDepth(vibrato: Float) {
+        mySynth.vibratoDepth = AUValue(vibrato)
+    }
+    
+    open func changeReverbAmount(reverbAmount: Float) {
+        reverb.dryWetMix = AUValue(reverbAmount)
+    }
+    
+    open func changeReverbPreset(reverbPreset: Int) {
+        reverb.loadFactoryPreset(AVAudioUnitReverbPreset(rawValue: reverbPreset)!)
+        print("Reverb index is now \(reverbPreset)")
+    }
+
 }

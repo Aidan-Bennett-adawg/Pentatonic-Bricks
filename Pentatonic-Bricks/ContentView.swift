@@ -6,7 +6,9 @@
 //
 
 import SwiftUI
+import Controls
 
+// A dictionary of arrays which stores 11 notes of the pentatonic scale for each root note of the western 12 note scale as a key
 let pentatonicScales: [String: [String]] = [
     "C": ["C2", "D2", "E2", "G2", "A2", "C3", "D3", "E3", "G3", "A3", "C4"],
     "C#": ["C#2", "D#2", "F2", "G#2", "A#2", "C#3", "D#3", "F3", "G#3", "A#3", "C#4"],
@@ -26,8 +28,50 @@ struct ContentView: View {
     @StateObject private var conductor = SynthConductor()
     @State private var activeNotes: Set<String> = [] // Tracks currently pressed notes
     @State private var rootNote: String = "C"
+    
+//    Vibrato state variables
+    @State private var vibratoSliderValue: Float = 0.0
+    @State private var vibratoSliderEditing = false
+    
+//    Reverb state variables
+    @State private var reverbSliderValue: Float = 0.0
+    @State private var reverbSliderEditing = false
+    @State private var reverbPreset: Int = 0
+    @State private var reverbPresetEditing = false
+    
+//    User interface options state variables
+
+    
     var body: some View {
         VStack {
+            HStack {
+                NavigationLink(destination: InfoView()) {
+                    Text("Info")
+                }
+                .buttonStyle(.borderedProminent)
+                .foregroundStyle(.white)
+                .background(.blue)
+                .cornerRadius(8)
+                .padding()
+//                .border(Color.red, width: 5)
+            }
+            Picker("Root Note", selection: $rootNote) {
+                Text("C").tag("C")
+                Text("C#").tag("C#")
+                Text("D").tag("D")
+                Text("D#").tag("D#")
+                Text("E").tag("E")
+                Text("F").tag("F")
+                Text("F#").tag("F#")
+                Text("G").tag("G")
+                Text("G#").tag("G#")
+                Text("A").tag("A")
+                Text("A#").tag("A#")
+                Text("B").tag("B")
+            }
+            .frame(width: 700, height: 100, alignment:.center)
+            .pickerStyle(WheelPickerStyle())
+            .padding()
                 HStack {
                     ForEach(pentatonicScales[rootNote]!, id: \.self) { note in
                         Text(note)
@@ -53,22 +97,47 @@ struct ContentView: View {
                     }
                     .padding(2)
                 }
-            Picker("Root Note", selection: $rootNote) {
-                Text("C").tag("C")
-                Text("C#").tag("C#")
-                Text("D").tag("D")
-                Text("D#").tag("D#")
-                Text("E").tag("E")
-                Text("F").tag("F")
-                Text("F#").tag("F#")
-                Text("G").tag("G")
-                Text("G#").tag("G#")
-                Text("A").tag("A")
-                Text("A#").tag("A#")
-                Text("B").tag("B")
+            Slider(value: $vibratoSliderValue, in: 0...1)
+                {Text("VibratoSlider")}
+                minimumValueLabel: {Text("0")}
+                maximumValueLabel: {Text("1")}
+                onEditingChanged: {
+                    editing in vibratoSliderEditing = editing
+                }
+                .onChange(of: vibratoSliderValue, initial: true) { (vibrato, newValue) in conductor.changeVibratoDepth(vibrato: newValue)
+                }
+                .padding()
+            Slider(value: $reverbSliderValue, in: 0...1)
+                {Text("ReverbSlider")}
+                minimumValueLabel: {Text("0")}
+                maximumValueLabel: {Text("1")}
+                onEditingChanged: {
+                    editing in reverbSliderEditing = editing
+                }
+                .onChange(of: reverbSliderValue, initial: true) { (reverbAmount, newValue) in conductor.changeReverbAmount(reverbAmount: newValue)
+                }
+                .padding()
+            Picker("Reverb Setting", selection: $reverbPreset) {
+                Text("Small Room").tag(0)
+                Text("Medium Room").tag(1)
+                Text("Large Room").tag(2)
+                Text("Medium Hall").tag(3)
+                Text("Large Hall").tag(4)
+                Text("Plate").tag(5)
+                Text("Medium Chamber").tag(6)
+                Text("Large Chamber").tag(7)
+                Text("Cathedral").tag(8)
+                Text("Large Room 2").tag(9)
+                Text("Medium Hall 2").tag(10)
+                Text("Medium Hall 3").tag(11)
+                Text("Large Hall 2").tag(12)
             }
-            .frame(width: 400, height: 100, alignment:.center)
+            .frame(width: 700, height: 100, alignment:.center)
             .pickerStyle(WheelPickerStyle())
+            .onChange(of: reverbPreset, initial: true) { (reverbPreset, newValue) in
+                conductor.changeReverbPreset(reverbPreset: newValue)
+            }
+            .padding()
         }
         .onAppear {
             conductor.start()
@@ -80,8 +149,23 @@ struct ContentView: View {
     }
 }
 
+struct InfoView: View {
+    var body: some View {
+        ZStack {
+            Color.mint
+                .ignoresSafeArea()
+            VStack {
+                Text("Info Screen")
+                    .font(.largeTitle)
+                    .padding()
+            }
+        }
+    }
+}
+
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+        InfoView()
     }
 }
