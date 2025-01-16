@@ -129,7 +129,7 @@ open class SynthConductor: ObservableObject, HasAudioEngine{
     }
     
     open func changeDelayLowPassCutoff(lowPassCutoff: Float) {
-        delay.lowPassCutoff = AUValue(lowPassCutoff*190+10)
+        delay.lowPassCutoff = AUValue(lowPassCutoff*150+50)
     }
     
     open func changeDelayTime(delayTime: Float) {

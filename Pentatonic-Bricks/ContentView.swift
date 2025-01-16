@@ -68,6 +68,31 @@ struct ContentView: View {
                     .ignoresSafeArea()
                 VStack {
                     HStack{
+                        XYPad(x: $delayTimeXYValue, y: $delayLowPassCutoffXYValue)
+                            .backgroundColor(.orange)
+                            .foregroundColor(.red)
+                            .cornerRadius(10)
+                            .onChange(of: delayTimeXYValue, initial: true) {
+                                (delayTime, newValue) in conductor.changeDelayTime(delayTime: newValue)
+                            }
+                            .onChange(of: delayLowPassCutoffXYValue, initial: true) {
+                                (delayLowPassCutoff, newValue) in conductor.changeDelayLowPassCutoff(lowPassCutoff: newValue)
+                            }
+                            .padding(3)
+                        XYPad(x: $phaserFeedbackXYValue, y: $phaserRateXYValue)
+                            .backgroundColor(.orange)
+                            .foregroundColor(.red)
+                            .cornerRadius(10)
+                            .onChange(of: phaserFeedbackXYValue, initial: true) {
+                                (phaserFeedback, newValue) in conductor.changePhaserFeedback(phaserFeedback: newValue)
+                            }
+                            .onChange(of: phaserRateXYValue, initial: true) {
+                                (phaserRate, newValue) in conductor.changePhaserRate(phaserRate: newValue)
+                            }
+                            .padding(3)
+                    }
+                    
+                    HStack{
                         VStack{
                             // XYPads go from (0, 0) at origin to (1, 1) at max x and y.
                             XYPad(x: $releaseXYValue, y: $attackDecayXYValue)
@@ -88,6 +113,7 @@ struct ContentView: View {
                                     (sustain, newValue) in conductor.changeSustain(sustain: newValue)
                             }
                         }
+                        .padding(3)
                         
                         VStack {
                             XYPad(x: $filterResonanceXYValue, y: $filterAttackDecayXYValue)
@@ -108,8 +134,10 @@ struct ContentView: View {
                                     (filterSustain, newValue) in conductor.changeFilterSustain(filterSustain: newValue)
                             }
                         }
+                        .padding(3)
                         
                     }
+                    
                     HStack {
                         NavigationLink(destination: InfoView()) {
                             Text("Instructions")
@@ -118,14 +146,58 @@ struct ContentView: View {
                         .foregroundStyle(.white)
                         .background(.blue)
                         .cornerRadius(8)
-                        //                .border(Color.red, width: 5)
                         
                         Button(areNotesHolding ? "Turn note toggle off" : "Turn note toggle on") {
                             areNotesHolding.toggle()
                         }
                         .buttonStyle(.borderedProminent)
-                        .padding()
+                        
+                        Picker("Reverb Setting", selection: $reverbPreset) {
+                            Text("Small Room").tag(0)
+                            Text("Medium Room").tag(1)
+                            Text("Large Room").tag(2)
+                            Text("Medium Hall").tag(3)
+                            Text("Large Hall").tag(4)
+                            Text("Plate").tag(5)
+                            Text("Medium Chamber").tag(6)
+                            Text("Large Chamber").tag(7)
+                            Text("Cathedral").tag(8)
+                            Text("Large Room 2").tag(9)
+                            Text("Medium Hall 2").tag(10)
+                            Text("Medium Hall 3").tag(11)
+                            Text("Large Hall 2").tag(12)
+                        }
+                        .frame(height: 50)
+                        .pickerStyle(WheelPickerStyle())
+                        .onChange(of: reverbPreset, initial: true) {
+                            (reverbPreset, newValue) in conductor.changeReverbPreset(reverbPreset: newValue)
+                        }
                     }
+                    HStack {
+                        
+                        Slider(value: $vibratoSliderValue, in: 0...1)
+                        {Text("VibratoSlider")}
+                        minimumValueLabel: {Text("0")}
+                        maximumValueLabel: {Text("1")}
+                        onEditingChanged: {
+                            editing in vibratoSliderEditing = editing
+                        }
+                        .onChange(of: vibratoSliderValue, initial: true) {
+                            (vibrato, newValue) in conductor.changeVibratoDepth(vibrato: newValue)
+                        }
+                        
+                        Slider(value: $reverbSliderValue, in: 0...1)
+                        {Text("ReverbSlider")}
+                        minimumValueLabel: {Text("0")}
+                        maximumValueLabel: {Text("1")}
+                        onEditingChanged: {
+                            editing in reverbSliderEditing = editing
+                        }
+                        .onChange(of: reverbSliderValue, initial: true) {
+                            (reverbAmount, newValue) in conductor.changeReverbAmount(reverbAmount: newValue)
+                        }
+                    }
+
                     Picker("Root Note", selection: $rootNote) {
                         Text("C").tag("C")
                         Text("C#").tag("C#")
@@ -142,7 +214,7 @@ struct ContentView: View {
                     }
                     .frame(width: 700, height: 50, alignment:.center)
                     .pickerStyle(WheelPickerStyle())
-                    .padding()
+                    
                     HStack {
                         ForEach(pentatonicScales[rootNote]!, id: \.self) { note in
                             Text(note)
@@ -181,76 +253,7 @@ struct ContentView: View {
                                         }
                                 )
                         }
-                        .padding(2)
                     }
-                    Slider(value: $vibratoSliderValue, in: 0...1)
-                    {Text("VibratoSlider")}
-                    minimumValueLabel: {Text("0")}
-                    maximumValueLabel: {Text("1")}
-                    onEditingChanged: {
-                        editing in vibratoSliderEditing = editing
-                    }
-                    .onChange(of: vibratoSliderValue, initial: true) {
-                        (vibrato, newValue) in conductor.changeVibratoDepth(vibrato: newValue)
-                    }
-                    .padding()
-                    Slider(value: $reverbSliderValue, in: 0...1)
-                    {Text("ReverbSlider")}
-                    minimumValueLabel: {Text("0")}
-                    maximumValueLabel: {Text("1")}
-                    onEditingChanged: {
-                        editing in reverbSliderEditing = editing
-                    }
-                    .onChange(of: reverbSliderValue, initial: true) {
-                        (reverbAmount, newValue) in conductor.changeReverbAmount(reverbAmount: newValue)
-                    }
-                    .padding()
-                    Picker("Reverb Setting", selection: $reverbPreset) {
-                        Text("Small Room").tag(0)
-                        Text("Medium Room").tag(1)
-                        Text("Large Room").tag(2)
-                        Text("Medium Hall").tag(3)
-                        Text("Large Hall").tag(4)
-                        Text("Plate").tag(5)
-                        Text("Medium Chamber").tag(6)
-                        Text("Large Chamber").tag(7)
-                        Text("Cathedral").tag(8)
-                        Text("Large Room 2").tag(9)
-                        Text("Medium Hall 2").tag(10)
-                        Text("Medium Hall 3").tag(11)
-                        Text("Large Hall 2").tag(12)
-                    }
-                    .frame(width: 700, height: 50, alignment:.center)
-                    .pickerStyle(WheelPickerStyle())
-                    .onChange(of: reverbPreset, initial: true) {
-                        (reverbPreset, newValue) in conductor.changeReverbPreset(reverbPreset: newValue)
-                    }
-                    .padding()
-                    HStack{
-                        XYPad(x: $delayTimeXYValue, y: $delayLowPassCutoffXYValue)
-                            .backgroundColor(.orange)
-                            .foregroundColor(.red)
-                            .cornerRadius(10)
-                            .onChange(of: delayTimeXYValue, initial: true) {
-                                (delayTime, newValue) in conductor.changeDelayTime(delayTime: newValue)
-                            }
-                            .onChange(of: delayLowPassCutoffXYValue, initial: true) {
-                                (delayLowPassCutoff, newValue) in conductor.changeDelayLowPassCutoff(lowPassCutoff: newValue)
-                            }
-                            .padding()
-                        XYPad(x: $phaserFeedbackXYValue, y: $phaserRateXYValue)
-                            .backgroundColor(.orange)
-                            .foregroundColor(.red)
-                            .cornerRadius(10)
-                            .onChange(of: phaserFeedbackXYValue, initial: true) {
-                                (phaserFeedback, newValue) in conductor.changePhaserFeedback(phaserFeedback: newValue)
-                            }
-                            .onChange(of: phaserRateXYValue, initial: true) {
-                                (phaserRate, newValue) in conductor.changePhaserRate(phaserRate: newValue)
-                            }
-                            .padding()
-                    }
-                    
                 }
                 .onAppear {
                     conductor.start()
