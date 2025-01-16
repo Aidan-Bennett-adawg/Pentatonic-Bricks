@@ -33,16 +33,31 @@ struct ContentView: View {
     @State private var vibratoSliderValue: Float = 0.0
     @State private var vibratoSliderEditing = false
     
+//    ADR filter state variables
+    @State private var attackDecayXYValue: Float = 0.5
+    @State private var releaseXYValue: Float = 0.5
+    
 //    Reverb state variables
     @State private var reverbSliderValue: Float = 0.0
     @State private var reverbSliderEditing = false
     @State private var reverbPreset: Int = 0
     @State private var reverbPresetEditing = false
     
+//    Phaser state variables
+    @State private var phaserRateXYValue: Float = 0.5
+    @State private var phaserFeedbackXYValue: Float = 0.5
+    
+//    Filter envolope state variables
+    @State private var filterAttackDecayXYValue: Float = 0.5
+    @State private var filterResonanceXYValue: Float = 0.5
+    
+//    Delay state variables
+    @State private var delayTimeXYValue: Float = 0.5
+    @State private var delayLowPassCutoffXYValue: Float = 0.5
+    
 //    User interface options state variables
     @State private var areNotesHolding = false
 
-    
     var body: some View {
 //        Navigation view logic based on LP 6.2
         NavigationView{
@@ -50,6 +65,31 @@ struct ContentView: View {
                 Color.cyan
                     .ignoresSafeArea()
                 VStack {
+                    HStack{
+                        // XYPads go from (0, 0) at origin to (1, 1) at max x and y.
+                        XYPad(x: $releaseXYValue, y: $attackDecayXYValue)
+                            .backgroundColor(.orange)
+                            .foregroundColor(.red)
+                            .cornerRadius(10)
+                            .onChange(of: attackDecayXYValue, initial: true) {
+                                (attackAndDecay, newValue) in conductor.changeAttackAndDecay(attackAndDecay: newValue)
+                            }
+                            .onChange(of: releaseXYValue, initial: true) {
+                                (release, newValue) in conductor.changeRelease(release: newValue)
+                            }
+                            .padding()
+                        XYPad(x: $filterResonanceXYValue, y: $filterAttackDecayXYValue)
+                            .backgroundColor(.orange)
+                            .foregroundColor(.red)
+                            .cornerRadius(10)
+                            .onChange(of: filterResonanceXYValue, initial: true) {
+                                (filterResonance, newValue) in conductor.changeFilterResonance(filterResonance: newValue)
+                            }
+                            .onChange(of: filterAttackDecayXYValue, initial: true) {
+                                (filterAttackAndDecay, newValue) in conductor.changeFilterAttackAndDecay(filterAttackAndDecay: newValue)
+                            }
+                            .padding()
+                    }
                     HStack {
                         NavigationLink(destination: InfoView()) {
                             Text("Instructions")
@@ -130,7 +170,8 @@ struct ContentView: View {
                     onEditingChanged: {
                         editing in vibratoSliderEditing = editing
                     }
-                    .onChange(of: vibratoSliderValue, initial: true) { (vibrato, newValue) in conductor.changeVibratoDepth(vibrato: newValue)
+                    .onChange(of: vibratoSliderValue, initial: true) {
+                        (vibrato, newValue) in conductor.changeVibratoDepth(vibrato: newValue)
                     }
                     .padding()
                     Slider(value: $reverbSliderValue, in: 0...1)
@@ -140,7 +181,8 @@ struct ContentView: View {
                     onEditingChanged: {
                         editing in reverbSliderEditing = editing
                     }
-                    .onChange(of: reverbSliderValue, initial: true) { (reverbAmount, newValue) in conductor.changeReverbAmount(reverbAmount: newValue)
+                    .onChange(of: reverbSliderValue, initial: true) {
+                        (reverbAmount, newValue) in conductor.changeReverbAmount(reverbAmount: newValue)
                     }
                     .padding()
                     Picker("Reverb Setting", selection: $reverbPreset) {
@@ -160,10 +202,35 @@ struct ContentView: View {
                     }
                     .frame(width: 700, height: 50, alignment:.center)
                     .pickerStyle(WheelPickerStyle())
-                    .onChange(of: reverbPreset, initial: true) { (reverbPreset, newValue) in
-                        conductor.changeReverbPreset(reverbPreset: newValue)
+                    .onChange(of: reverbPreset, initial: true) {
+                        (reverbPreset, newValue) in conductor.changeReverbPreset(reverbPreset: newValue)
                     }
                     .padding()
+                    HStack{
+                        XYPad(x: $delayTimeXYValue, y: $delayLowPassCutoffXYValue)
+                            .backgroundColor(.orange)
+                            .foregroundColor(.red)
+                            .cornerRadius(10)
+                            .onChange(of: delayTimeXYValue, initial: true) {
+                                (delayTime, newValue) in conductor.changeDelayTime(delayTime: newValue)
+                            }
+                            .onChange(of: delayLowPassCutoffXYValue, initial: true) {
+                                (delayLowPassCutoff, newValue) in conductor.changeDelayLowPassCutoff(lowPassCutoff: newValue)
+                            }
+                            .padding()
+                        XYPad(x: $phaserFeedbackXYValue, y: $phaserRateXYValue)
+                            .backgroundColor(.orange)
+                            .foregroundColor(.red)
+                            .cornerRadius(10)
+                            .onChange(of: phaserFeedbackXYValue, initial: true) {
+                                (phaserFeedback, newValue) in conductor.changePhaserFeedback(phaserFeedback: newValue)
+                            }
+                            .onChange(of: phaserRateXYValue, initial: true) {
+                                (phaserRate, newValue) in conductor.changePhaserRate(phaserRate: newValue)
+                            }
+                            .padding()
+                    }
+                    
                 }
                 .onAppear {
                     conductor.start()

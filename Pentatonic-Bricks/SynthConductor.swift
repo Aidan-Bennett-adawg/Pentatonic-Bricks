@@ -6,6 +6,7 @@
 //  Template from lab 7 used for the Synth class functionality
 
 import AudioKit
+import SoundpipeAudioKit
 import DunneAudioKit
 import SwiftUI
 import AVFAudio
@@ -26,26 +27,28 @@ let noteToMIDIDictionary: [String: MIDINoteNumber] = {
 
 open class SynthConductor: ObservableObject, HasAudioEngine{
     
-    
     var mySynth: Synth! // Class variable to hold synth instrument
+    var phaser: Phaser! // Class variable for the phaser node
+    var delay: Delay! // Class variable for the delay node
     var reverb: Reverb! // Class variable for the reverb node
     public let engine = AudioEngine() // Creates an audio engine for playing the synth
 
     
     init() {
         mySynth = Synth()       // Create synth instrument
-        reverb = Reverb(mySynth) // Creates the reverb node
-        engine.output = reverb       // and connect it to audio out
-        // The synth will play without any parameters being set
-        // but here are a few things you can adjust
-        // Look at the documentation online for the full set
-        // or start typing mySynth. and see what options come up
-        mySynth.attackDuration = 0.5
-        mySynth.filterCutoff = 0.5
-        mySynth.filterAttackDuration = 1.5
+        phaser = Phaser(mySynth) // Attach mySynth output to the phaser node input
+        delay = Delay(phaser) // Attach phaser output to the delay node input
+        reverb = Reverb(delay) // Attach delay output to the reverb node input
+        engine.output = reverb // Attach reverb output to the final audio engine output
+        
+//        Then define parameters that have no user interface value bound to them
         mySynth.masterVolume = 0.5
-        mySynth.filterResonance = 1.0
-        mySynth.vibratoDepth = 0.2
+        
+        
+        delay.dryWetMix = 40
+        delay.feedback = 1.0
+        
+        phaser.depth = 0.5
         
         try!engine.start()
     }
@@ -85,5 +88,51 @@ open class SynthConductor: ObservableObject, HasAudioEngine{
         reverb.loadFactoryPreset(AVAudioUnitReverbPreset(rawValue: reverbPreset)!)
         print("Reverb index is now \(reverbPreset)")
     }
-
+    
+    open func changeAttackAndDecay(attackAndDecay: Float) {
+        mySynth.attackDuration = AUValue(4*attackAndDecay)
+        mySynth.decayDuration = AUValue(8*attackAndDecay)
+        print("Decay duration: \(mySynth.decayDuration)")
+        print("Attack duration: \(mySynth.attackDuration)")
+    }
+    
+    open func changeRelease(release: Float) {
+        mySynth.releaseDuration = AUValue(4*release)
+        print("Release duration: \(mySynth.releaseDuration)")
+    }
+    
+    open func changeSustain(sustain: Float) {
+        mySynth.sustainLevel = AUValue(sustain)
+    }
+    
+    open func changePhaserRate(phaserRate: Float) {
+//        phaserRate value is scaled from 0 to 1 to 24 to 360 to match phaser documentation values
+        phaser.lfoBPM = AUValue(phaserRate*336+24)
+        
+    }
+    
+    open func changePhaserFeedback(phaserFeedback: Float) {
+        phaser.feedback = AUValue(phaserFeedback*0.8)
+    }
+    
+    open func changeFilterAttackAndDecay(filterAttackAndDecay: Float) {
+        mySynth.filterAttackDuration = AUValue(2*filterAttackAndDecay)
+        mySynth.filterDecayDuration = AUValue(2*filterAttackAndDecay)
+    }
+    
+    open func changeFilterResonance(filterResonance: Float) {
+        mySynth.filterResonance = AUValue(5*filterResonance)
+    }
+    
+    open func changeFilterSustain(filterSustain: Float) {
+        mySynth.filterSustainLevel = AUValue(filterSustain)
+    }
+    
+    open func changeDelayLowPassCutoff(lowPassCutoff: Float) {
+        delay.lowPassCutoff = AUValue(lowPassCutoff*190+10)
+    }
+    
+    open func changeDelayTime(delayTime: Float) {
+        delay.time = AUValue(delayTime)
+    }
 }
