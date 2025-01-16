@@ -33,9 +33,10 @@ struct ContentView: View {
     @State private var vibratoSliderValue: Float = 0.0
     @State private var vibratoSliderEditing = false
     
-//    ADR filter state variables
+//    ADSR filter state variables
     @State private var attackDecayXYValue: Float = 0.5
     @State private var releaseXYValue: Float = 0.5
+    @State private var sustainSliderValue: Float = 0.6
     
 //    Reverb state variables
     @State private var reverbSliderValue: Float = 0.0
@@ -50,6 +51,7 @@ struct ContentView: View {
 //    Filter envolope state variables
     @State private var filterAttackDecayXYValue: Float = 0.5
     @State private var filterResonanceXYValue: Float = 0.5
+    @State private var filterSustainSliderValue: Float = 0.6
     
 //    Delay state variables
     @State private var delayTimeXYValue: Float = 0.5
@@ -66,29 +68,47 @@ struct ContentView: View {
                     .ignoresSafeArea()
                 VStack {
                     HStack{
-                        // XYPads go from (0, 0) at origin to (1, 1) at max x and y.
-                        XYPad(x: $releaseXYValue, y: $attackDecayXYValue)
-                            .backgroundColor(.orange)
-                            .foregroundColor(.red)
-                            .cornerRadius(10)
-                            .onChange(of: attackDecayXYValue, initial: true) {
-                                (attackAndDecay, newValue) in conductor.changeAttackAndDecay(attackAndDecay: newValue)
+                        VStack{
+                            // XYPads go from (0, 0) at origin to (1, 1) at max x and y.
+                            XYPad(x: $releaseXYValue, y: $attackDecayXYValue)
+                                .backgroundColor(.orange)
+                                .foregroundColor(.red)
+                                .cornerRadius(10)
+                                .onChange(of: attackDecayXYValue, initial: true) {
+                                    (attackAndDecay, newValue) in conductor.changeAttackAndDecay(attackAndDecay: newValue)
+                                }
+                                .onChange(of: releaseXYValue, initial: true) {
+                                    (release, newValue) in conductor.changeRelease(release: newValue)
+                                }
+                            Slider(value: $sustainSliderValue, in: 0.1...1)
+                            {Text("Sustain Slider")}
+                            minimumValueLabel: {Text("0.1")}
+                            maximumValueLabel: {Text("1")}
+                                .onChange(of: sustainSliderValue, initial: true) {
+                                    (sustain, newValue) in conductor.changeSustain(sustain: newValue)
                             }
-                            .onChange(of: releaseXYValue, initial: true) {
-                                (release, newValue) in conductor.changeRelease(release: newValue)
+                        }
+                        
+                        VStack {
+                            XYPad(x: $filterResonanceXYValue, y: $filterAttackDecayXYValue)
+                                .backgroundColor(.orange)
+                                .foregroundColor(.red)
+                                .cornerRadius(10)
+                                .onChange(of: filterResonanceXYValue, initial: true) {
+                                    (filterResonance, newValue) in conductor.changeFilterResonance(filterResonance: newValue)
+                                }
+                                .onChange(of: filterAttackDecayXYValue, initial: true) {
+                                    (filterAttackAndDecay, newValue) in conductor.changeFilterAttackAndDecay(filterAttackAndDecay: newValue)
+                                }
+                            Slider(value: $filterSustainSliderValue, in: 0.1...1)
+                            {Text("Filter Sustain Slider")}
+                            minimumValueLabel: {Text("0.1")}
+                            maximumValueLabel: {Text("1")}
+                                .onChange(of: filterSustainSliderValue, initial: true) {
+                                    (filterSustain, newValue) in conductor.changeFilterSustain(filterSustain: newValue)
                             }
-                            .padding()
-                        XYPad(x: $filterResonanceXYValue, y: $filterAttackDecayXYValue)
-                            .backgroundColor(.orange)
-                            .foregroundColor(.red)
-                            .cornerRadius(10)
-                            .onChange(of: filterResonanceXYValue, initial: true) {
-                                (filterResonance, newValue) in conductor.changeFilterResonance(filterResonance: newValue)
-                            }
-                            .onChange(of: filterAttackDecayXYValue, initial: true) {
-                                (filterAttackAndDecay, newValue) in conductor.changeFilterAttackAndDecay(filterAttackAndDecay: newValue)
-                            }
-                            .padding()
+                        }
+                        
                     }
                     HStack {
                         NavigationLink(destination: InfoView()) {
