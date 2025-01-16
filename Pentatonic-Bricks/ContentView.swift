@@ -69,8 +69,8 @@ struct ContentView: View {
                 VStack {
                     HStack{
                         XYPad(x: $delayTimeXYValue, y: $delayLowPassCutoffXYValue)
-                            .backgroundColor(.orange)
-                            .foregroundColor(.red)
+                            .backgroundColor(.white)
+                            .foregroundColor(.black)
                             .cornerRadius(10)
                             .onChange(of: delayTimeXYValue, initial: true) {
                                 (delayTime, newValue) in conductor.changeDelayTime(delayTime: newValue)
@@ -80,8 +80,8 @@ struct ContentView: View {
                             }
                             .padding(3)
                         XYPad(x: $phaserFeedbackXYValue, y: $phaserRateXYValue)
-                            .backgroundColor(.orange)
-                            .foregroundColor(.red)
+                            .backgroundColor(.white)
+                            .foregroundColor(.black)
                             .cornerRadius(10)
                             .onChange(of: phaserFeedbackXYValue, initial: true) {
                                 (phaserFeedback, newValue) in conductor.changePhaserFeedback(phaserFeedback: newValue)
@@ -96,8 +96,8 @@ struct ContentView: View {
                         VStack{
                             // XYPads go from (0, 0) at origin to (1, 1) at max x and y.
                             XYPad(x: $releaseXYValue, y: $attackDecayXYValue)
-                                .backgroundColor(.orange)
-                                .foregroundColor(.red)
+                                .backgroundColor(.white)
+                                .foregroundColor(.black)
                                 .cornerRadius(10)
                                 .onChange(of: attackDecayXYValue, initial: true) {
                                     (attackAndDecay, newValue) in conductor.changeAttackAndDecay(attackAndDecay: newValue)
@@ -117,8 +117,8 @@ struct ContentView: View {
                         
                         VStack {
                             XYPad(x: $filterResonanceXYValue, y: $filterAttackDecayXYValue)
-                                .backgroundColor(.orange)
-                                .foregroundColor(.red)
+                                .backgroundColor(.white)
+                                .foregroundColor(.black)
                                 .cornerRadius(10)
                                 .onChange(of: filterResonanceXYValue, initial: true) {
                                     (filterResonance, newValue) in conductor.changeFilterResonance(filterResonance: newValue)
