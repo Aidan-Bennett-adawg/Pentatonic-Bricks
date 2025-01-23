@@ -61,7 +61,7 @@ struct ContentView: View {
     
 //    User interface options state variables
     @State private var areNotesHolding = false
-    @State private var valuesShowing = true
+    @State private var valuesShowing = false
 
     var body: some View {
 //        Navigation view logic based on LP 6.2
@@ -81,6 +81,7 @@ struct ContentView: View {
                                         .foregroundColor(.blue)
                                         .font(.headline)
                                 }
+                                .allowsHitTesting(false) // Allows touches through the info text
                                 .zIndex(valuesShowing ? 1 : 0)
                                 
                                 XYPad(x: $delayTimeXYValue, y: $delayLowPassCutoffXYValue)
@@ -106,6 +107,7 @@ struct ContentView: View {
                                         .foregroundColor(.blue)
                                         .font(.headline)
                                 }
+                                .allowsHitTesting(false)
                                 .zIndex(valuesShowing ? 1 : 0)
                                 XYPad(x: $phaserFeedbackXYValue, y: $phaserRateXYValue)
                                     .backgroundColor(.white)
@@ -131,6 +133,7 @@ struct ContentView: View {
                                         .foregroundColor(.blue)
                                         .font(.headline)
                                 }
+                                .allowsHitTesting(false)
                                 .zIndex(valuesShowing ? 1 : 0)
                                     
                                 XYPad(x: $releaseXYValue, y: $attackDecayXYValue)
@@ -156,6 +159,7 @@ struct ContentView: View {
                                             .foregroundColor(.blue)
                                             .font(.headline)
                                     }
+                                    .allowsHitTesting(false)
                                     .zIndex(valuesShowing ? 1 : 0)
                                     
                                     XYPad(x: $filterResonanceXYValue, y: $filterAttackDecayXYValue)

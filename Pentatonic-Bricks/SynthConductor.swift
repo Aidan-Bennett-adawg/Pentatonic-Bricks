@@ -42,7 +42,7 @@ open class SynthConductor: ObservableObject, HasAudioEngine{
         engine.output = reverb // Attach reverb output to the final audio engine output
         
 //        Then define initial parameters according to the presets in the bound user interface values
-        mySynth.masterVolume = 1
+        mySynth.masterVolume = 0.9
         
         self.changeVibratoDepth(vibrato: 0)
         self.changeAttackAndDecay(attackAndDecay: 0.5)
@@ -76,7 +76,7 @@ open class SynthConductor: ObservableObject, HasAudioEngine{
     open func playNote (MIDIname: String){
         if let midiNote = noteToMIDIDictionary[MIDIname] {
             print("Note \(MIDIname) corresponds to MIDI note \(midiNote)")
-            mySynth.play(noteNumber: midiNote, velocity: 100)
+            mySynth.play(noteNumber: midiNote, velocity: 120)
         }
         else{
             print("That MIDI value is invalid")
