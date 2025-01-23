@@ -24,6 +24,7 @@ let pentatonicScales: [String: [String]] = [
     "B": ["B3", "C#4", "D#4", "F#4", "G#4", "B4", "C#5", "D#5", "F#5", "G#5", "B5"]
 ]
 
+
 struct ContentView: View {
     @StateObject private var conductor = SynthConductor()
     @State private var activeNotes: Set<String> = [] // Tracks currently pressed notes
@@ -385,17 +386,45 @@ struct ContentView: View {
 
 struct InfoView: View {
     var body: some View {
-        ZStack {
-            Color.mint
-                .ignoresSafeArea()
-            VStack {
-                Text("Info Screen")
-                    .font(.largeTitle)
-                    .padding()
+        GeometryReader { geometry in
+            ZStack {
+                Color.mint
+                    .ignoresSafeArea()
+                
+                ScrollView { // Enables scrolling if needed
+                    VStack {
+                        Text("Top left pad:\n -> Up and down to control the delay low pass filter cutoff in Hz\n -> Side to side to control the delay time in seconds\nTop right pad:\n -> Up and down to control the phaser rate in beats per minute (bpm)\n -> Side to side to control the amount of phaser feedback\nBottom left pad:\n -> Up and down to control the attack and decay time of the amplitude envelope in seconds\n -> Side to side to control the release time of the amplitude filter in seconds\nBottom right pad:\n -> Up and down to control the filter attack and decay time in seconds\n -> Side to side to control the filter resonance level")
+                            .padding()
+                            .frame(width: geometry.size.width - 10) // Adds padding to prevent edge touches
+                            .multilineTextAlignment(.leading) // Centers the text
+
+                        Spacer().frame(height: 3) // Adds space between text and image
+
+                        Image("PentatonicBotInfoScreen")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit) // Fits the image within its frame without cropping
+                            .frame(width: geometry.size.width - 450) // Adds margin on the sides
+                            .cornerRadius(10) // Optional: Rounds the corners of the image
+                            .shadow(radius: 5) // Optional: Adds a shadow for better visual hierarchy
+                        
+                        Spacer().frame(height: 3)
+                        
+                        Text("Play the synth by touching the blocks labelled with the notes they play at the bottom of the screen; they are based on a pentatonic scale so any note will sound good with a neighboring note. You can select the root note of the pentatonic scale using the selector above the note blocks.\n\nToggle the Hold switch so that notes will toggle on and off instead of stopping when you release, and press the CLEAR button to stop all notes playing.\n\nToggle the Show values switch to make labels appear with values of the XYPads, and values of other parameters such as the vibrato depth, the reverb dry/wet mix, and the sustain levels of the amplitude and filter envelopes. The reverb room preset can be selected using the options above the reverb slider.")
+                            .padding()
+                            .frame(width: geometry.size.width - 10) // Adds padding to prevent edge touches
+                            .multilineTextAlignment(.leading) // Centers the text
+                    }
+                    .frame(maxWidth: .infinity) // Centers the VStack content horizontally
+                    .padding(.vertical, 20) // Adds vertical padding for better spacing
+                    
+                    
+                }
             }
         }
     }
 }
+
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
