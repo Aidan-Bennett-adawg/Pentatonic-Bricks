@@ -393,7 +393,7 @@ struct InfoView: View {
                 
                 ScrollView { // Enables scrolling if needed
                     VStack {
-                        Text("Top left pad:\n -> Up and down to control the delay low pass filter cutoff in Hz\n -> Side to side to control the delay time in seconds\nTop right pad:\n -> Up and down to control the phaser rate in beats per minute (bpm)\n -> Side to side to control the amount of phaser feedback\nBottom left pad:\n -> Up and down to control the attack and decay time of the amplitude envelope in seconds\n -> Side to side to control the release time of the amplitude filter in seconds\nBottom right pad:\n -> Up and down to control the filter attack and decay time in seconds\n -> Side to side to control the filter resonance level")
+                        Text("Top left pad:\n -> Up and down to control the delay low pass filter cutoff in Hz\n -> Side to side to control the delay time in seconds\n\nTop right pad:\n -> Up and down to control the phaser rate in beats per minute (bpm)\n -> Side to side to control the amount of phaser feedback\n\nBottom left pad:\n -> Up and down to control the attack and decay time of the amplitude envelope in seconds\n -> Side to side to control the release time of the amplitude filter in seconds\n\nBottom right pad:\n -> Up and down to control the filter attack and decay time in seconds\n -> Side to side to control the filter resonance level")
                             .padding()
                             .frame(width: geometry.size.width - 10) // Adds padding to prevent edge touches
                             .multilineTextAlignment(.leading) // Centers the text
@@ -403,7 +403,7 @@ struct InfoView: View {
                         Image("PentatonicBotInfoScreen")
                             .resizable()
                             .aspectRatio(contentMode: .fit) // Fits the image within its frame without cropping
-                            .frame(width: geometry.size.width - 450) // Adds margin on the sides
+                            .frame(width: geometry.size.width - 300) // Adds margin on the sides
                             .cornerRadius(10) // Optional: Rounds the corners of the image
                             .shadow(radius: 5) // Optional: Adds a shadow for better visual hierarchy
                         
