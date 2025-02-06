@@ -26,8 +26,12 @@ let pentatonicScales: [String: [String]] = [
 
 
 struct ContentView: View {
+//    This is a conductor object to access all of the functions that can interact with Audio Kit in the SynthConductor class..
     @StateObject private var conductor = SynthConductor()
-    @State private var activeNotes: Set<String> = [] // Tracks currently pressed notes
+    
+//    Tracks currently pressed notes in an array of strings, since the notes are activated via strings.
+    @State private var activeNotes: Set<String> = []
+//    This variable stores the current selected root note of the pentatonic scale.
     @State private var rootNote: String = "C"
     
 //    Vibrato state variables
@@ -65,8 +69,9 @@ struct ContentView: View {
     @State private var valuesShowing = false
 
     var body: some View {
-//        Navigation view logic based on LP 6.2
+//        Navigation view logic based on LP 6.2 from lab 6, and allows transition to an information page
         NavigationView{
+//            The geometry reader stores the size of the main ZStack so that subviews can be kept neatly within it's limits later on in the code.
             GeometryReader { geometry in
                 ZStack{
                     Color.cyan
@@ -85,6 +90,7 @@ struct ContentView: View {
                                 .allowsHitTesting(false) // Allows touches through the info text
                                 .zIndex(valuesShowing ? 1 : 0)
                                 
+//                                XYPad uses values from 0 to 1 on an X and Y axis and maps them on to features in the app
                                 XYPad(x: $delayTimeXYValue, y: $delayLowPassCutoffXYValue)
                                 
                                     .backgroundColor(.white)
@@ -312,7 +318,7 @@ struct ContentView: View {
                             .buttonStyle(.borderedProminent)
                             
                             
-                            
+//                            This picker is so the user can select which root note they want for the pentatonic scale keys that appear at the bottom of the interface.
                             Picker("Root Note", selection: $rootNote) {
                                 Text("C").tag("C")
                                 Text("C#").tag("C#")
@@ -340,6 +346,7 @@ struct ContentView: View {
                                     .foregroundColor(.white)
                                     .cornerRadius(10)
                                     .gesture(
+//                                        This drag gesture recognises when a user presses their finger on a screen and drags within the block, hence the minimum distance of 0, so that notes are activated for the whole duration of a press down, and the release only starts when they release their finger. Their is also a case when the "Hold" button has been toggled on the user interface, where notes will staay playing by being added to a string based array of active notes.
                                         DragGesture(minimumDistance: 0)
                                             .onChanged { _ in
                                                 if areNotesHolding { // Toggle behavior
@@ -370,12 +377,14 @@ struct ContentView: View {
                             }
                         }
                     }
+//                    These functions mean the engine stops playing when navigating to the info page.
                     .onAppear {
                         conductor.start()
                     }
                     .onDisappear{
                         conductor.stop()
                     }
+//                    This uses the main geometry reader object to keep the overall interface frame small enough so parts of the side aren't cut off, especially on smaller iPad models e.g. 10 inch models.
                     .frame(width: geometry.size.width-10, alignment: .center)
                 }
             }

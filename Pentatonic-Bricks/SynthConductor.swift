@@ -11,7 +11,7 @@ import DunneAudioKit
 import SwiftUI
 import AVFAudio
 
-
+// This dictionary of strings converts a string sent to it to the equivalent MIDI note, which includes the octave it is in based on the appended number.
 let noteToMIDIDictionary: [String: MIDINoteNumber] = {
     let notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
     var dictionary = [String: MIDINoteNumber]()
@@ -82,7 +82,7 @@ open class SynthConductor: ObservableObject, HasAudioEngine{
             print("That MIDI value is invalid")
         }
     }
-    
+//    This does a similar thing except it stops the note.
     open func stopNote (MIDIname: String){
         if let midiNote = noteToMIDIDictionary[MIDIname] {
             mySynth.stop(noteNumber: midiNote)

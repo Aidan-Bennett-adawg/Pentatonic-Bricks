@@ -7,12 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BB1B331A2D5500D300300679 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = BB1B33192D5500D300300679 /* README.md */; };
 		BB284B112D37CDF60040FF34 /* SoundpipeAudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = BB284B102D37CDF60040FF34 /* SoundpipeAudioKit */; };
 		BB284B142D37CE270040FF34 /* DunneAudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = BB284B132D37CE270040FF34 /* DunneAudioKit */; };
 		BB284B372D382E4D0040FF34 /* Controls in Frameworks */ = {isa = PBXBuildFile; productRef = BB284B362D382E4D0040FF34 /* Controls */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		BB1B33192D5500D300300679 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		BB284ADF2D37CCC70040FF34 /* Pentatonic-Bricks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pentatonic-Bricks.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -41,6 +43,7 @@
 		BB284AD62D37CCC70040FF34 = {
 			isa = PBXGroup;
 			children = (
+				BB1B33192D5500D300300679 /* README.md */,
 				BB284AE12D37CCC70040FF34 /* Pentatonic-Bricks */,
 				BB284AE02D37CCC70040FF34 /* Products */,
 			);
@@ -126,6 +129,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BB1B331A2D5500D300300679 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
