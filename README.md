@@ -6,3 +6,4 @@ This audio app has been designed for iPad, and features two octaves of the penta
 [Please see this PDF for a very short summary of the design process.](Pentatonic-Bricks GitHub info.pdf)
 
 Please watch this short demonstration video which shows the first prototype of the app in action:
+https://youtu.be/3kPgqesT50c
