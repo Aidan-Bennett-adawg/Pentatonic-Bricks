@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		BB1B331A2D5500D300300679 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = BB1B33192D5500D300300679 /* README.md */; };
-		BB1B331E2D550FF700300679 /* Pentatonic-Bricks_GitHub_info.pdf in Resources */ = {isa = PBXBuildFile; fileRef = BB1B331D2D550FF700300679 /* Pentatonic-Bricks_GitHub_info.pdf */; };
+		BB1B33202D55111800300679 /* Pentatonic-Bricks_GitHub_info_HD.pdf in Resources */ = {isa = PBXBuildFile; fileRef = BB1B331F2D55111800300679 /* Pentatonic-Bricks_GitHub_info_HD.pdf */; };
 		BB284B112D37CDF60040FF34 /* SoundpipeAudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = BB284B102D37CDF60040FF34 /* SoundpipeAudioKit */; };
 		BB284B142D37CE270040FF34 /* DunneAudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = BB284B132D37CE270040FF34 /* DunneAudioKit */; };
 		BB284B372D382E4D0040FF34 /* Controls in Frameworks */ = {isa = PBXBuildFile; productRef = BB284B362D382E4D0040FF34 /* Controls */; };
@@ -16,7 +16,7 @@
 
 /* Begin PBXFileReference section */
 		BB1B33192D5500D300300679 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		BB1B331D2D550FF700300679 /* Pentatonic-Bricks_GitHub_info.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Pentatonic-Bricks_GitHub_info.pdf"; sourceTree = "<group>"; };
+		BB1B331F2D55111800300679 /* Pentatonic-Bricks_GitHub_info_HD.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "Pentatonic-Bricks_GitHub_info_HD.pdf"; sourceTree = "<group>"; };
 		BB284ADF2D37CCC70040FF34 /* Pentatonic-Bricks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pentatonic-Bricks.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -45,7 +45,7 @@
 		BB284AD62D37CCC70040FF34 = {
 			isa = PBXGroup;
 			children = (
-				BB1B331D2D550FF700300679 /* Pentatonic-Bricks_GitHub_info.pdf */,
+				BB1B331F2D55111800300679 /* Pentatonic-Bricks_GitHub_info_HD.pdf */,
 				BB1B33192D5500D300300679 /* README.md */,
 				BB284AE12D37CCC70040FF34 /* Pentatonic-Bricks */,
 				BB284AE02D37CCC70040FF34 /* Products */,
@@ -132,8 +132,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BB1B331E2D550FF700300679 /* Pentatonic-Bricks_GitHub_info.pdf in Resources */,
 				BB1B331A2D5500D300300679 /* README.md in Resources */,
+				BB1B33202D55111800300679 /* Pentatonic-Bricks_GitHub_info_HD.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
