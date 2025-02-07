@@ -7,3 +7,5 @@ This audio app has been designed for iPad, and features two octaves of the penta
 
 Please watch this short demonstration video which shows the first prototype of the app in action:
 https://youtu.be/3kPgqesT50c
+
+![Main interface](PentatonicBotInfoScreen.png)
